@@ -1,0 +1,336 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Loan Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>Loan Prediction</h2>
+    <form method="POST" action="/predict">
+
+        <label>Application Type</label>
+        <select name="application_type" required>
+            <option>INDIVIDUAL</option>
+        </select>
+
+        <label>Employment Length</label>
+        <select name="emp_length" required>
+            <option>10+ years</option>
+            <option>2 years</option>
+            <option>&lt; 1 year</option>
+            <option>3 years</option>
+            <option>4 years</option>
+            <option>5 years</option>
+            <option>1 year</option>
+            <option>6 years</option>
+            <option>7 years</option>
+            <option>8 years</option>
+            <option>9 years</option>
+        </select>
+
+        <label>Grade</label>
+        <select name="grade" required>
+            <option>B</option>
+            <option>A</option>
+            <option>C</option>
+            <option>D</option>
+            <option>E</option>
+            <option>F</option>
+            <option>G</option>
+        </select>
+
+        <label>Home Ownership</label>
+        <select name="home_ownership" required>
+            <option>RENT</option>
+            <option>MORTGAGE</option>
+            <option>OWN</option>
+            <option>OTHER</option>
+            <option>NONE</option>
+        </select>
+
+        <label>Purpose</label>
+        <select name="purpose" required>
+            <option>Debt consolidation</option>
+            <option>credit card</option>
+            <option>other</option>
+            <option>home improvement</option>
+            <option>major purchase</option>
+            <option>small business</option>
+            <option>car</option>
+            <option>wedding</option>
+            <option>medical</option>
+            <option>moving</option>
+            <option>house</option>
+            <option>vacation</option>
+            <option>educational</option>
+            <option>renewable_energy</option>
+        </select>
+
+        <label>Verification Status</label>
+        <select name="verification_status" required>
+            <option>Not Verified</option>
+            <option>Verified</option>
+            <option>Source Verified</option>
+        </select>
+
+        <input type="number" step="any" name="annual_income" placeholder="Annual Income" required>
+        <input type="number" step="any" name="dti" placeholder="Debt to Income Ratio" required>
+        <input type="number" step="any" name="int_rate" placeholder="Interest Rate" required>
+        <input type="number" step="any" name="loan_amount" placeholder="Loan Amount" required>
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction_text %}
+        <p class="result">{{ prediction_text }}</p>
+    {% endif %}
+</div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Prediction</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            /* background-color: #f4f4f4;
+            background-image: url('https://shorturl.at/9lHaV'); */
+            background: linear-gradient(145deg,#5433FF,#20BDFF,#A5FECB);
+           
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        /* Container Styling */
+        .container {
+            background: transparent;
+            /* background-color: white; */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 450px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 32px;
+            color: black;
+        }
+
+        /* Form and Input Fields Styling */
+        form label {
+            font-size: 16px;
+            color: #333;
+            text-align: left;
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 15px;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s;
+        }
+
+        form input:focus, form select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        /* Submit Button Styling */
+        button {
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Prediction Text Styling */
+        .prediction {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Logout Link Styling */
+        .logout {
+            border: 1px black;
+            background-color: red;
+            width: 50px;
+            height: 30px;
+            margin-top: 25px;
+            margin-left: 23vh;
+            color: white;
+            font-size: 14px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+        }   
+
+        .logout a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logout a:hover {
+            color: #45a049;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            button {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Loan Prediction</h1>
+    <form method="POST" action="{{ url_for('predict') }}">
+        <!-- Application Type -->
+        <label for="application_type">Application Type</label>
+        <select name="application_type" required>
+            <option value="INDIVIDUAL">Individual</option>
+        </select>
+
+        <!-- Employment Length -->
+        <label for="emp_length">Employment Length</label>
+        <select name="emp_length" required>
+            <option value="10+ years">10+ years</option>
+            <option value="2 years">2 years</option>
+            <option value="< 1 year">< 1 year</option>
+            <option value="3 years">3 years</option>
+            <option value="4 years">4 years</option>
+            <option value="5 years">5 years</option>
+            <option value="1 year">1 year</option>
+            <option value="6 years">6 years</option>
+            <option value="7 years">7 years</option>
+            <option value="8 years">8 years</option>
+            <option value="9 years">9 years</option>
+        </select>
+
+        <!-- Grade -->
+        <label for="grade">Grade</label>
+        <select name="grade" required>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+        </select>
+
+        <!-- Home Ownership -->
+        <label for="home_ownership">Home Ownership</label>
+        <select name="home_ownership" required>
+            <option value="RENT">Rent</option>
+            <option value="MORTGAGE">Mortgage</option>
+            <option value="OWN">Own</option>
+        </select>
+
+        <!-- Purpose -->
+        <label for="purpose">Purpose</label>
+        <select name="purpose" required>
+            <option value="Debt consolidation">Debt consolidation</option>
+            <option value="credit card">Credit card</option>
+            <option value="other">Other</option>
+            <option value="home improvement">Home improvement</option>
+            <option value="major purchase">Major purchase</option>
+            <option value="small business">Small business</option>
+            <option value="car">Car</option>
+            <option value="wedding">Wedding</option>
+            <option value="medical">Medical</option>
+            <option value="moving">Moving</option>
+            <option value="house">House</option>
+            <option value="vacation">Vacation</option>
+            <option value="educational">Educational</option>
+            <option value="renewable_energy">Renewable energy</option>
+        </select>
+
+        <!-- Verification Status -->
+        <label for="verification_status">Verification Status</label>
+        <select name="verification_status" required>
+            <option value="Not Verified">Not Verified</option>
+            <option value="Verified">Verified</option>
+            <option value="Source Verified">Source Verified</option>
+        </select>
+
+        <!-- Annual Income -->
+        <label for="annual_income">Annual Income</label>
+        <input type="number" name="annual_income" required>
+
+        <!-- Debt-to-Income Ratio -->
+        <label for="dti">Debt-to-Income Ratio</label>
+        <input type="number" step="any" name="dti" required>
+
+        <!-- Interest Rate -->
+        <label for="int_rate">Interest Rate</label>
+        <input type="number" step="any" name="int_rate" required>
+
+        <!-- Loan Amount -->
+        <label for="loan_amount">Loan Amount</label>
+        <input type="number" name="loan_amount" required>
+
+        <!-- Submit Button -->
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction_text %}
+    <div class="prediction">
+        <p>{{ prediction_text }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Logout Link -->
+    <div class="logout">
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+</body>
+</html>
